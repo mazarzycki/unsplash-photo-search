@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsplash Photo Search</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+</head>
+
+<body>
+
+  <div class="container">
+    <!--Search input-->
+    <div class="search">
+      <div class="title">Photo Search by Unsplash</div>
+      <form class="searchForm" autocomplete="on">
+        <input type="text" id="autocomplete" placeholder="Write something" class="inputField" autofocus></input>
+        <button class="searchButton">Find a photo</button>
+      </form>
+    </div>
+
+    <!--Search results-->
+    <div class="foundPhotos">
+
+    </div>
+
+    <div id="myModal" class="modal">
+      <span id="close" onclick="closeModal()">&times;</span>
+      <div class="modalContent">
+        <div id="photoSmall"></div>
+        <div id="photoDescription"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+
+      $(".searchButton").click(function () {
+        event.preventDefault()
+
+        var searchQuery = $(".inputField").val();
+        var client_id = "FfYp1ZB8b1n8B14J8FDCBqGL8RxKFNOHi1JmHU-WBWI"
+
+        $.ajax({
+          url: 'https://api.unsplash.com/search/photos',
+          dataType: 'json',
+          type: 'GET',
+          data: { query: searchQuery, client_id: client_id, per_page: 40 },
+
+          success: function (data) {
+
+            $(".foundPhotos").empty();
+
+            data.results.forEach(photo => {
+              $('.foundPhotos').append(` 
+              <img class="image" onclick="showModal()" title="Author:${photo.user.name} | ${photo.alt_description}" src="${photo.urls.small}"/>    
+              `)
+
+              $('.modalContent').html(`
+              <img class="image" src="${photo.urls.small}"/> <br/> <div>${photo.alt_description}</div> <br/>Author: ${photo.user.name}
+              `) 
+             
+            });
+            
+
+          }
+        })
+      });
+    });
+
+   
+
+  </script>
+  <script src="script.js"></script>
+  <footer>
+
+  </footer>
+</body>
+
+
+</html>
